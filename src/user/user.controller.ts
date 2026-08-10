@@ -4,10 +4,7 @@ import { UpdateUserDTO } from './dto/update-user.dto';
 
 @Controller('user')
 export class UserController {
-  private users = [
-    { id: 1, name: 'Gloria' },
-    { id: 2, name: 'Uwineza' },
-  ];
+  
   @Get()
   // query parameter
   getUsers(@Query('name') name: string) {
@@ -38,7 +35,7 @@ export class UserController {
   updateUser(@Param('id') id: string, @Body() updateUserDTO: UpdateUserDTO) {
     const user = this.users.find((user) => user.id === Number(id));
     if (user) {
-      user.name = updateUserDTO.name;
+      user.name = updateUserDTO.name ?? user.name;
     }
     return { data: updateUserDTO };
   }
