@@ -1,42 +1,41 @@
-import { Controller, Get, Query, Param, Post, Put, Body } from '@nestjs/common';
-import { CreateUserDTO } from './dto/create-user.dto';
-import { UpdateUserDTO } from './dto/update-user.dto';
-
+import {
+  Controller,
+  Get,
+  Query,
+  Param,
+  Post,
+  Put,
+  Body,
+  Delete,
+} from '@nestjs/common';
+import { UserService } from './user.service';
 @Controller('user')
 export class UserController {
-  
+  constructor(private readonly userService: UserService) {}
   @Get()
   // query parameter
-  getUsers(@Query('name') name: string) {
-    if (name) {
-      return this.users.filter(
-        (user) => user.name.toLowerCase() === name.toLowerCase(),
-      );
-    }
-    return this.users;
+  findAll(@Query('role') role: 'ENGINEER' | ' ADMIN') {
+    return this.userService.findAll(role);
   }
   // get user by id
   @Get(':id')
   getUserById(@Param('id') id: string) {
-    return this.users.find((user) => user.id === Number(id));
+    return this.userService.findOne(Number(id));
   }
   @Post()
-  createUser(@Body() createUserDTO: CreateUserDTO) {
-    const lastUser = this.users[this.users.length - 1];
-    const newId = lastUser.id + 1;
-    const newUser = {
-      id: newId,
-      name: createUserDTO.name,
-    };
-    this.users.push(newUser);
-    return { data: newUser, message: 'user created successfully' };
+  createUser(@Body() user: { name: string; email: string; role: string }) {
+    return this.userService.create(user);
   }
   @Put(':id')
-  updateUser(@Param('id') id: string, @Body() updateUserDTO: UpdateUserDTO) {
-    const user = this.users.find((user) => user.id === Number(id));
-    if (user) {
-      user.name = updateUserDTO.name ?? user.name;
-    }
-    return { data: updateUserDTO };
+  updateUser(
+    @Param('id') id: string,
+    @Body()
+    updateUser: { name?: string; email?: string; role?: 'ENGINEER' | 'ADMIN' },
+  ) {
+    return this.userService.update(Number(id), updateUser);
+  }
+  @Delete(':id')
+  delteUser(@Param('id') id: string) {
+    return this.userService.delete(Number(id));
   }
 }
