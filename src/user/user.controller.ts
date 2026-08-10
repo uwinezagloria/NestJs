@@ -14,7 +14,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
   @Get()
   // query parameter
-  findAll(@Query('role') role: 'ENGINEER' | ' ADMIN') {
+  findAll(@Query('role') role?: 'ENGINEER' | 'ADMIN') {
     return this.userService.findAll(role);
   }
   // get user by id
