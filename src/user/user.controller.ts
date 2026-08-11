@@ -7,8 +7,11 @@ import {
   Put,
   Body,
   Delete,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { UserService } from './user.service';
+import { CreateUserDTO } from './dto/create-user.dto';
+import { UpdateUserDTO } from './dto/update-user.dto';
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -19,23 +22,23 @@ export class UserController {
   }
   // get user by id
   @Get(':id')
-  getUserById(@Param('id') id: string) {
-    return this.userService.findOne(Number(id));
+  getUserById(@Param('id', ParseIntPipe) id: number) {
+    return this.userService.findOne(id);
   }
   @Post()
-  createUser(@Body() user: { name: string; email: string; role: string }) {
-    return this.userService.create(user);
+  createUser(@Body() createUserDto: CreateUserDTO) {
+    return this.userService.create(createUserDto);
   }
   @Put(':id')
   updateUser(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body()
-    updateUser: { name?: string; email?: string; role?: 'ENGINEER' | 'ADMIN' },
+    updateUserDto: UpdateUserDTO,
   ) {
-    return this.userService.update(Number(id), updateUser);
+    return this.userService.update(id, updateUserDto);
   }
   @Delete(':id')
-  delteUser(@Param('id') id: string) {
-    return this.userService.delete(Number(id));
+  delteUser(@Param('id', ParseIntPipe) id: number) {
+    return this.userService.delete(id);
   }
 }

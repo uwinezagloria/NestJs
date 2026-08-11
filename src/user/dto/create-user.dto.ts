@@ -1,3 +1,5 @@
 export class CreateUserDTO {
-  name!: string;
+  name: string;
+  email: string;
+  role: 'ADMIN' | 'ENGINEER';
 }
