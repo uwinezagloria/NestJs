@@ -9,12 +9,20 @@ export class UserService {
   ];
   findAll(role?: 'ENGINEER' | 'ADMIN') {
     if (role) {
-      return this.users.filter((user) => user.role === role);
+      const user = this.users.filter((user) => user.role === role);
+      if (user.length === 0) {
+        throw new NotFoundException('user not found');
+      }
+      return user;
     }
     return this.users;
   }
   findOne(id: number) {
-    return this.users.find((user) => user.id === id);
+    const user = this.users.find((user) => user.id === id);
+    if (!user) {
+      throw new NotFoundException('user not found');
+    }
+    return user;
   }
   create(createUserDto: CreateUserDTO) {
     const userWithHighestId = [...this.users].sort((a, b) => b.id - a.id);
